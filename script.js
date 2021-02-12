@@ -45,6 +45,7 @@ const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
 const containerApp = document.querySelector('.app');
+// The left container of movements
 const containerMovements = document.querySelector('.movements');
 
 const btnLogin = document.querySelector('.login__btn');
@@ -65,6 +66,21 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 
 const displayMovements = function (movements) {
-  movements.forEach((movement, i) => {});
+  movements.forEach((movement, i) => {
+    // If value is positive, type is withdrawal, otherwise it is a deposit
+    const type = movement < 0 ? 'withdrawal' : 'deposit'; // Don't allow 0
+
+    // Construct html to insert into the movements container on the front-end
+    const html = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+        <div class="movements__date">3 days ago</div>
+        <div class="movements__value">${movement}€</div>
+      </div>
+    `;
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
 };
 displayMovements(account1.movements);
