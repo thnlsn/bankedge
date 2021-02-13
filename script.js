@@ -90,8 +90,6 @@ const displayMovements = function (movements) {
 };
 displayMovements(account1.movements);
 
-console.log(containerMovements.innerHTML);
-
 ///////////////////////////////////////
 // Coding Challenge #1
 
@@ -106,6 +104,20 @@ console.log(containerMovements.innerHTML);
 // 3. For each remaining dog, log to the console whether it's an adult ("Dog number 1 is an adult, and is 5 years old") or a puppy ("Dog number 2 is still a puppy 🐶")
 
 // 4. Run the function for both test datasets
+const checkDogs = (dogsJulia, dogsKate) => {
+  const dogs = [...[...dogsJulia].splice(1, 2), ...dogsKate];
+
+  dogs.forEach((age, i) => {
+    console.log(
+      `Dog #${i + 1} is ${
+        age < 3 ? 'still a puppy!' : `a ${age} year old adult.`
+      }`
+    );
+  });
+};
+checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
+console.log('\n');
+checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
 
 // HINT: Use tools from all lectures in this section so far 😉
 
