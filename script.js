@@ -90,7 +90,6 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
 
 // CALCULATE TOTAL BALANCE //
 const calcDisplayBalance = (movements) => {
@@ -104,11 +103,11 @@ const calcDisplaySummary = (movements) => {
   // Filter and reduce all deposits into a total
   const incomes = movements
     .filter((deposit) => deposit > 0)
-    .reduce((acc, deposit) => acc + deposit);
+    .reduce((acc, deposit) => acc + deposit, 0);
   // Filter and reduce all withdrawals into a total
   const out = movements
     .filter((withdrawal) => withdrawal < 0)
-    .reduce((acc, withdrawal) => acc + withdrawal);
+    .reduce((acc, withdrawal) => acc + withdrawal, 0);
   // Filter in only deposits, map them to interests, filter out the ones below 1, and reduce it into a total of interest gain
   const interest = movements
     .filter((deposit) => deposit > 0)
@@ -118,13 +117,12 @@ const calcDisplaySummary = (movements) => {
       // Only allow interests greater than 1 into the reducer
       return int >= 1;
     })
-    .reduce((acc, int) => acc + int);
+    .reduce((acc, int) => acc + int, 0);
 
   labelSumIn.textContent = `${incomes}€`;
   labelSumOut.textContent = `${Math.abs(out)}€`;
   labelSumInterest.textContent = `${interest}€`;
 };
-calcDisplaySummary(account1.movements);
 
 // CREATE USERNAMES FOR ALL ACCOUNTS
 const createUsernames = (accounts) => {
@@ -153,18 +151,20 @@ btnLogin.addEventListener('click', function (e) {
   );
   // Only access pin if the username relates to an actual account (to avoid TypeError)
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    const { owner, movements } = currentAccount; // Destructure data
     containerApp.style.opacity = 1;
     // Display UI message notifying a successful login
     //labelWelcome
-    labelWelcome.textContent = `Welcome back, ${currentAccount.owner}`;
+    labelWelcome.textContent = `Welcome back, ${
+      // Split the name by the spaces, and only take the first name/element
+      owner.split(' ')[0]
+    }`;
     // Display movements
-    //containerMovements
+    displayMovements(movements);
     // Display summary
-    //labelSumIn
-    //labelSumOut
-    //labelSumInterest
+    calcDisplaySummary(movements);
     // Display balance
-    //labelBalance
+    calcDisplayBalance(movements);
   }
 });
 
