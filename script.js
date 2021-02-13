@@ -62,9 +62,9 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// display = functions that calculate values for the display
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+// DISPLAY FUNCTIONS
 
 // DISPLAY ALL MOVEMENTS //
 const displayMovements = function (movements) {
@@ -140,6 +140,37 @@ createUsernames(accounts);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
+// EVENT HANDLERS
+
+// GLOBAL DATA
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  // Find the account with the same username as inputted
+  currentAccount = accounts.find(
+    (account) => account.username === inputLoginUsername.value
+  );
+  // Only access pin if the username relates to an actual account (to avoid TypeError)
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    containerApp.style.opacity = 1;
+    // Display UI message notifying a successful login
+    //labelWelcome
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner}`;
+    // Display movements
+    //containerMovements
+    // Display summary
+    //labelSumIn
+    //labelSumOut
+    //labelSumInterest
+    // Display balance
+    //labelBalance
+  }
+});
+
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+// UNUSED
 
 const eurToUsd = 1.1; // Conversion rate EUR to USD
 // Movements converted to USD from EUR
@@ -167,3 +198,18 @@ const totalDeposits = account1.movements
     return acc + mov;
   });
 console.log(totalDeposits);
+
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+// TESTING
+
+console.log('\n\nTESTING\n\n\n');
+console.log(account1.movements.find((mov) => mov < 0));
+
+const account = accounts.find((account) => account.owner === 'Emily Davis');
+console.log(account);
+
+let acct;
+for (const account of accounts)
+  if (account.owner === 'Emily Davis') acct = account;
+console.log(acct);
