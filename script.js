@@ -66,6 +66,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // display = functions that calculate values for the display
 
+// DISPLAY ALL MOVEMENTS //
 const displayMovements = function (movements) {
   // Clear the movements container first
   containerMovements.textContent = '';
@@ -91,12 +92,54 @@ const displayMovements = function (movements) {
 };
 displayMovements(account1.movements);
 
-// Function to calculate the balance
+// CALCULATE TOTAL BALANCE //
 const calcDisplayBalance = (movements) => {
   const balance = movements.reduce((acc, movement) => acc + movement, 0);
   labelBalance.textContent = `${balance}€`;
 };
 calcDisplayBalance(account1.movements);
+
+// CALCULATE THE SUMMARY OF TOTAL DEPOSITS, WITHDRAWALS, & INTEREST
+const calcDisplaySummary = (movements) => {
+  // Filter and reduce all deposits into a total
+  const incomes = movements
+    .filter((deposit) => deposit > 0)
+    .reduce((acc, deposit) => acc + deposit);
+  // Filter and reduce all withdrawals into a total
+  const out = movements
+    .filter((withdrawal) => withdrawal < 0)
+    .reduce((acc, withdrawal) => acc + withdrawal);
+  // Filter in only deposits, map them to interests, filter out the ones below 1, and reduce it into a total of interest gain
+  const interest = movements
+    .filter((deposit) => deposit > 0)
+    .map((deposit) => (deposit * 1.2) / 100)
+    .filter((int, _, arr) => {
+      console.log(arr);
+      // Only allow interests greater than 1 into the reducer
+      return int >= 1;
+    })
+    .reduce((acc, int) => acc + int);
+
+  labelSumIn.textContent = `${incomes}€`;
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumInterest.textContent = `${interest}€`;
+};
+calcDisplaySummary(account1.movements);
+
+// CREATE USERNAMES FOR ALL ACCOUNTS
+const createUsernames = (accounts) => {
+  accounts.forEach((account) => {
+    account.username = account.owner
+      .toLowerCase() // return full name in lowercase
+      .split(' ') // split name into words
+      .map((name) => name[0]) // take only the first letter of each word
+      .join(''); // join array of first letters into a string for the username
+  });
+};
+createUsernames(accounts);
+
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 const eurToUsd = 1.1; // Conversion rate EUR to USD
 // Movements converted to USD from EUR
@@ -110,34 +153,17 @@ const movementDescriptions = account1.movements.map(
     } ${Math.abs(movement)}`
 );
 
-// Function to create usernames for each of the accounts
-const createUsernames = (accounts) => {
-  accounts.forEach((account) => {
-    account.username = account.owner
-      .toLowerCase() // return full name in lowercase
-      .split(' ') // split name into words
-      .map((name) => name[0]) // take only the first letter of each word
-      .join(''); // join array of first letters into a string for the username
+const totalDeposits = account1.movements
+  .filter((mov, _, arr) => {
+    console.log(arr);
+    return mov < 0;
+  })
+  .map((mov, _, arr) => {
+    console.log(arr);
+    return mov * eurToUsd;
+  })
+  .reduce((acc, mov, _, arr) => {
+    console.log(arr);
+    return acc + mov;
   });
-};
-createUsernames(accounts);
-
-// Function to filter out withdrawals / deposits
-const deposits = account1.movements.filter((movement) => movement > 0);
-console.log(deposits);
-const withdrawals = account1.movements.filter((movement) => movement < 0);
-console.log(withdrawals);
-
-// Function to reduce all movements to a total value
-const balance = account1.movements.reduce(
-  // Return the total of movements added to accumulator
-  (acc, movement, i, arr) => acc + movement,
-  0
-);
-console.log(balance);
-
-const max = account1.movements.reduce(
-  (acc, movement) => (acc > movement ? acc : movement),
-  account1.movements[0]
-);
-console.log(max);
+console.log(totalDeposits);
