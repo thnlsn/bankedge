@@ -165,6 +165,8 @@ btnLogin.addEventListener('click', function (e) {
     calcDisplaySummary(movements);
     // Display balance
     calcDisplayBalance(movements);
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = ''; // Assignment operator goes from right to left, so it will set all fields to ''
   }
 });
 
