@@ -64,6 +64,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+// display = functions that calculate values for the display
 
 const displayMovements = function (movements) {
   // Clear the movements container first
@@ -89,6 +90,13 @@ const displayMovements = function (movements) {
   });
 };
 displayMovements(account1.movements);
+
+// Function to calculate the balance
+const calcDisplayBalance = (movements) => {
+  const balance = movements.reduce((acc, movement) => acc + movement, 0);
+  labelBalance.textContent = `${balance}€`;
+};
+calcPrintBalance(account1.movements);
 
 const eurToUsd = 1.1; // Conversion rate EUR to USD
 // Movements converted to USD from EUR
@@ -117,7 +125,6 @@ createUsernames(accounts);
 // Function to filter out withdrawals / deposits
 const deposits = account1.movements.filter((movement) => movement > 0);
 console.log(deposits);
-
 const withdrawals = account1.movements.filter((movement) => movement < 0);
 console.log(withdrawals);
 
