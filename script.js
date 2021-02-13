@@ -90,11 +90,13 @@ const displayMovements = function (movements) {
 };
 displayMovements(account1.movements);
 
-const eurToUsd = 1.1;
+const eurToUsd = 1.1; // Conversion rate EUR to USD
+// Movements converted to USD from EUR
 const movementsUSD = account1.movements.map((movement) => movement * eurToUsd);
 console.log(account1.movements);
 console.log(movementsUSD);
 
+// Function to create descriptions from movements
 const movementDescriptions = account1.movements.map(
   (movement, i, arr) =>
     `Movement ${i + 1}: You ${
@@ -102,3 +104,11 @@ const movementDescriptions = account1.movements.map(
     } ${Math.abs(movement)}`
 );
 console.log(movementDescriptions);
+
+const computeUsername = (user) =>
+  user
+    .toLowerCase()
+    .split(' ')
+    .map((name) => name[0])
+    .join('');
+console.log(computeUsername('James Jonah Jamison'));
