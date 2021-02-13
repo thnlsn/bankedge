@@ -96,7 +96,7 @@ const calcDisplayBalance = (movements) => {
   const balance = movements.reduce((acc, movement) => acc + movement, 0);
   labelBalance.textContent = `${balance}€`;
 };
-calcPrintBalance(account1.movements);
+calcDisplayBalance(account1.movements);
 
 const eurToUsd = 1.1; // Conversion rate EUR to USD
 // Movements converted to USD from EUR
@@ -135,3 +135,9 @@ const balance = account1.movements.reduce(
   0
 );
 console.log(balance);
+
+const max = account1.movements.reduce(
+  (acc, movement) => (acc > movement ? acc : movement),
+  account1.movements[0]
+);
+console.log(max);
