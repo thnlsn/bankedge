@@ -113,3 +113,18 @@ const createUsernames = (accounts) => {
   });
 };
 createUsernames(accounts);
+
+// Function to filter out withdrawals / deposits
+const deposits = account1.movements.filter((movement) => movement > 0);
+console.log(deposits);
+
+const withdrawals = account1.movements.filter((movement) => movement < 0);
+console.log(withdrawals);
+
+// Function to reduce all movements to a total value
+const balance = account1.movements.reduce(
+  // Return the total of movements added to accumulator
+  (acc, movement, i, arr) => acc + movement,
+  0
+);
+console.log(balance);
