@@ -193,8 +193,7 @@ btnTransfer.addEventListener('click', function (e) {
     (account) => account.username === inputTransferTo.value
   );
 
-  inputTransferTo.value = '';
-  inputTransferAmount.value = '';
+  inputTransferTo.value = inputTransferAmount.value = '';
 
   // Only allow transfer if it is non-negative, is an existing user, is less than total balance, and is not the users own account
   console.log(recieverAccount);
@@ -215,9 +214,29 @@ btnTransfer.addEventListener('click', function (e) {
   updateUI(currentAccount);
 });
 
+// REQUEST LOAN //
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  // Amount to deposit as loan
+  const amount = Number(inputLoanAmount.value);
+
+  // Check if request is above 0 and an existing deposit greater than 10% of request exists, to ensure the user is trustworthy
+  if (
+    amount > 0 &&
+    currentAccount.movements
+      .filter((movement) => movement > 0)
+      .some((deposit) => deposit >= amount / 10)
+  )
+    currentAccount.movements.push(amount);
+
+  // Update display
+  updateUI(currentAccount);
+});
+
 // DELETE ACCOUNT //
 btnClose.addEventListener('click', function (e) {
-  e.preventDefault();
+  e.preventDefault(); // Prevent reload
 
   // Check if the input username and pin match the logged in user
   if (
@@ -234,8 +253,9 @@ btnClose.addEventListener('click', function (e) {
     // Remove the UI (the account display)
     containerApp.style.opacity = 0;
     // Remove the welcome message
-    labelWelcome.textContent = ' hah GAYYYY';
+    labelWelcome.textContent = 'Log in to get started';
   }
+  inputCloseUsername.value = inputClosePin.value = '';
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -274,12 +294,9 @@ console.log(totalDeposits);
 // TESTING
 
 console.log('\n\nTESTING\n\n\n');
-console.log(account1.movements.find((mov) => mov < 0));
 
-const account = accounts.find((account) => account.owner === 'Emily Davis');
-console.log(account);
+console.log(account1.movements);
+console.log(account1.movements.includes(-130));
 
-let acct;
-for (const account of accounts)
-  if (account.owner === 'Emily Davis') acct = account;
-console.log(acct);
+// Check if there are SOME movements that are positive
+console.log(account1.movements.some((mov) => mov > 0));
