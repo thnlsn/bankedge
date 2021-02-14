@@ -92,14 +92,17 @@ const displayMovements = function (movements) {
 };
 
 // CALCULATE TOTAL BALANCE //
-const calcDisplayBalance = (movements) => {
-  const balance = movements.reduce((acc, movement) => acc + movement, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = (account) => {
+  // Setting the agruments balance to the reduced value total, but it updates it on the global scale because objects are passed by sharing (value is reference), so it will update in the heap and all references pointing to that will now have the new value
+  account.balance = account.movements.reduce(
+    (acc, movement) => acc + movement,
+    0
+  );
+  labelBalance.textContent = `${account.balance}€`;
 };
-calcDisplayBalance(account1.movements);
 
 // CALCULATE THE SUMMARY OF TOTAL DEPOSITS, WITHDRAWALS, & INTEREST
-const calcDisplaySummary = (movements) => {
+const calcDisplaySummary = (movements, rate = 1) => {
   // Filter and reduce all deposits into a total
   const incomes = movements
     .filter((deposit) => deposit > 0)
@@ -111,7 +114,7 @@ const calcDisplaySummary = (movements) => {
   // Filter in only deposits, map them to interests, filter out the ones below 1, and reduce it into a total of interest gain
   const interest = movements
     .filter((deposit) => deposit > 0)
-    .map((deposit) => (deposit * 1.2) / 100)
+    .map((deposit) => (deposit * rate) / 100)
     .filter((int, _, arr) => {
       console.log(arr);
       // Only allow interests greater than 1 into the reducer
@@ -142,8 +145,13 @@ createUsernames(accounts);
 
 // GLOBAL DATA
 let currentAccount;
+/* let currentAccount = account1;
+inputLoginUsername.value = 'tn';
+inputLoginPin.value = 1111; */
 
+// LOGIN EVENT //
 btnLogin.addEventListener('click', function (e) {
+  // containerApp.addEventListener('click', function (e) {
   e.preventDefault();
   // Find the account with the same username as inputted
   currentAccount = accounts.find(
@@ -151,7 +159,7 @@ btnLogin.addEventListener('click', function (e) {
   );
   // Only access pin if the username relates to an actual account (to avoid TypeError)
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
-    const { owner, movements } = currentAccount; // Destructure data
+    const { owner, movements, interestRate: rate } = currentAccount; // Destructure data
     containerApp.style.opacity = 1;
     // Display UI message notifying a successful login
     //labelWelcome
@@ -162,12 +170,36 @@ btnLogin.addEventListener('click', function (e) {
     // Display movements
     displayMovements(movements);
     // Display summary
-    calcDisplaySummary(movements);
+    calcDisplaySummary(movements, rate);
     // Display balance
-    calcDisplayBalance(movements);
+    calcDisplayBalance(currentAccount);
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = ''; // Assignment operator goes from right to left, so it will set all fields to ''
+    inputLoginPin.blur();
   }
+});
+
+/* inputTransferTo inputTransferAmount btnTransfer */
+// TRANSFER FUNDS //
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  // Amount to transfer
+  const amount = Number(inputTransferAmount.value);
+  console.log(amount);
+
+  // Add inputted amount to target account
+  const target = inputTransferTo.value;
+  accounts
+    .find((account) => account.username === target)
+    .movements.push(amount);
+
+  // Remove inputted amount to logged in account
+  currentAccount.movements.push(-amount);
+
+  // Rerender/update UI values once transfer is complete
+  displayMovements(currentAccount.movements);
+  calcDisplaySummary(currentAccount.movements, currentAccount.interestRate);
+  calcDisplayBalance(currentAccount);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
