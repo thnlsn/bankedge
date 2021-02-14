@@ -143,6 +143,9 @@ const updateUI = (account) => {
   calcDisplayBalance(account);
 };
 
+// DELETE ACCOUNT //
+const deleteAccount = (account) => {};
+
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // EVENT HANDLERS
@@ -164,6 +167,7 @@ btnLogin.addEventListener('click', function (e) {
   // Only access pin if the username relates to an actual account (to avoid TypeError)
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     const { owner, movements, interestRate: rate } = currentAccount; // Destructure data
+    // Make the UI visible
     containerApp.style.opacity = 1;
     // Display UI message notifying a successful login
     //labelWelcome
@@ -178,7 +182,6 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
-/* inputTransferTo inputTransferAmount btnTransfer */
 // TRANSFER FUNDS //
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
@@ -189,6 +192,9 @@ btnTransfer.addEventListener('click', function (e) {
   const recieverAccount = accounts.find(
     (account) => account.username === inputTransferTo.value
   );
+
+  inputTransferTo.value = '';
+  inputTransferAmount.value = '';
 
   // Only allow transfer if it is non-negative, is an existing user, is less than total balance, and is not the users own account
   console.log(recieverAccount);
@@ -207,6 +213,29 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.movements.push(-amount);
   }
   updateUI(currentAccount);
+});
+
+// DELETE ACCOUNT //
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  // Check if the input username and pin match the logged in user
+  if (
+    currentAccount.username === inputCloseUsername.value &&
+    currentAccount.pin === Number(inputClosePin.value)
+  ) {
+    const indexToDelete = accounts.findIndex(
+      (account) => account.username === currentAccount.username
+    );
+    // Splice mutates the array by removing the index parameter, and 1 to say 1 element
+    accounts.splice(indexToDelete, 1);
+    console.log(accounts);
+
+    // Remove the UI (the account display)
+    containerApp.style.opacity = 0;
+    // Remove the welcome message
+    labelWelcome.textContent = ' hah GAYYYY';
+  }
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
