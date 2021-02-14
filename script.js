@@ -94,6 +94,7 @@ const displayMovements = function (movements) {
 // CALCULATE TOTAL BALANCE //
 const calcDisplayBalance = (account) => {
   // Setting the agruments balance to the reduced value total, but it updates it on the global scale because objects are passed by sharing (value is reference), so it will update in the heap and all references pointing to that will now have the new value
+  // Generate a balance key with value of all movements reduced into 1 value
   account.balance = account.movements.reduce(
     (acc, movement) => acc + movement,
     0
@@ -115,11 +116,7 @@ const calcDisplaySummary = (movements, rate = 1) => {
   const interest = movements
     .filter((deposit) => deposit > 0)
     .map((deposit) => (deposit * rate) / 100)
-    .filter((int, _, arr) => {
-      console.log(arr);
-      // Only allow interests greater than 1 into the reducer
-      return int >= 1;
-    })
+    .filter((int, _, arr) => int >= 1)
     .reduce((acc, int) => acc + int, 0);
 
   labelSumIn.textContent = `${incomes}€`;
@@ -138,6 +135,13 @@ const createUsernames = (accounts) => {
   });
 };
 createUsernames(accounts);
+
+// RERENDER/UPDATE THE DISPLAY //
+const updateUI = (account) => {
+  displayMovements(account.movements);
+  calcDisplaySummary(account.movements, account.interestRate);
+  calcDisplayBalance(account);
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -167,12 +171,7 @@ btnLogin.addEventListener('click', function (e) {
       // Split the name by the spaces, and only take the first name/element
       owner.split(' ')[0]
     }`;
-    // Display movements
-    displayMovements(movements);
-    // Display summary
-    calcDisplaySummary(movements, rate);
-    // Display balance
-    calcDisplayBalance(currentAccount);
+    updateUI(currentAccount);
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = ''; // Assignment operator goes from right to left, so it will set all fields to ''
     inputLoginPin.blur();
@@ -185,21 +184,29 @@ btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   // Amount to transfer
   const amount = Number(inputTransferAmount.value);
-  console.log(amount);
 
-  // Add inputted amount to target account
-  const target = inputTransferTo.value;
-  accounts
-    .find((account) => account.username === target)
-    .movements.push(amount);
+  // Account to recieve transfer
+  const recieverAccount = accounts.find(
+    (account) => account.username === inputTransferTo.value
+  );
 
-  // Remove inputted amount to logged in account
-  currentAccount.movements.push(-amount);
+  // Only allow transfer if it is non-negative, is an existing user, is less than total balance, and is not the users own account
+  console.log(recieverAccount);
+  if (
+    amount > 0 &&
+    recieverAccount &&
+    amount <= currentAccount.balance &&
+    recieverAccount?.username !== currentAccount.username
+  ) {
+    // Add inputted amount to recieverAccount
+    accounts
+      .find((account) => account.username === recieverAccount.username)
+      .movements.push(amount);
 
-  // Rerender/update UI values once transfer is complete
-  displayMovements(currentAccount.movements);
-  calcDisplaySummary(currentAccount.movements, currentAccount.interestRate);
-  calcDisplayBalance(currentAccount);
+    // Remove inputted amount to logged in account
+    currentAccount.movements.push(-amount);
+  }
+  updateUI(currentAccount);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
