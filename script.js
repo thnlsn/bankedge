@@ -62,17 +62,24 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+// STATE
+
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
 
 // DISPLAY ALL MOVEMENTS //
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   // Clear the movements container first
   containerMovements.textContent = '';
 
+  // Sort if sort parameter is true, otherwise display as normal
+  const movs = sort
+    ? currentAccount.movements.slice().sort((a, b) => a - b)
+    : movements;
+
   // Construct an html structure to push into the container for each movement
-  movements.forEach((movement, i) => {
+  movs.forEach((movement, i) => {
     // If value is positive, type is withdrawal, otherwise it is a deposit
     const type = movement < 0 ? 'withdrawal' : 'deposit'; // Don't allow 0
 
@@ -258,15 +265,20 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
+// SORT MOVEMENTS //
+let sorted = false;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
-  console.log('Sort');
+  sorted = !sorted; // Flip the boolean
+  // Display movements (update only this part of the UI)
+  displayMovements(currentAccount.movements, sorted);
 });
+
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // UNUSED
 
-const eurToUsd = 1.1; // Conversion rate EUR to USD
+/* const eurToUsd = 1.1; // Conversion rate EUR to USD
 // Movements converted to USD from EUR
 const movementsUSD = account1.movements.map((movement) => movement * eurToUsd);
 
@@ -291,13 +303,13 @@ const totalDeposits = account1.movements
     console.log(arr);
     return acc + mov;
   });
-console.log(totalDeposits);
+console.log(totalDeposits); */
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // TESTING
 
-console.log('\n\nTESTING\n\n\n');
+/* console.log('\n\nTESTING\n\n\n');
 
 console.log(account1.movements);
 console.log(account1.movements.includes(-130));
@@ -317,8 +329,27 @@ console.log(accountMovements);
 
 console.log(
   accounts.flatMap((acc) => acc.movements).reduce((acc, mov) => acc + mov)
-);
+); */
 
 /* console.log(arr.flat());
 console.log(arr.flat(2));
 console.log(arr.flat(3)); */
+
+/* const testArr = [200, 450, -400, 3000, -650, -130, 70, 1300]; */
+// Sort method
+
+// Strings
+/* const owners = ['Jonas', 'Tyler', 'Kaden', 'Mortimer', 'Rick'];
+console.log(owners.sort()); */
+
+// Numbers
+// return < 0 ? A => B (keep order)
+// return > 0 ? B => A (switch order)
+
+// Return a negative if the two current arguments are ordered as you want them, otherwise return a positive
+/* testArr.sort((a, z) => {
+  if (a < z) return -1; // Correct ordering, so left less than right
+  if (a > z) return 1; // Incorrect ordering, so left more than right
+}); */
+/* testArr.sort((a, z) => z - a);
+console.log(testArr); */
