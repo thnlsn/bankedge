@@ -353,3 +353,22 @@ console.log(owners.sort()); */
 }); */
 /* testArr.sort((a, z) => z - a);
 console.log(testArr); */
+
+labelBalance.addEventListener('click', function (e) {
+  e.preventDefault();
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    (el) => el.textContent.replace('€', '')
+  );
+  console.log(movementsUI);
+});
+
+/* const obj = {
+  length: 4,
+  name: 'Thomas',
+  age: 24,
+  weight: '192',
+  eyeColor: 'black',
+};
+const objArr = Array.from(obj, (cur, i) => this, obj);
+console.log(objArr); */
