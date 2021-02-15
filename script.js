@@ -258,6 +258,10 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  console.log('Sort');
+});
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // UNUSED
@@ -300,3 +304,21 @@ console.log(account1.movements.includes(-130));
 
 // Check if there are SOME movements that are positive
 console.log(account1.movements.some((mov) => mov > 0));
+
+const arr = [
+  [1, 2, 3],
+  [9, 9, [1, 1, 1, 1, [1], [[[1]]]]],
+  222,
+  [('a', 'b', 'c')],
+];
+
+const accountMovements = accounts.map((acc) => acc.movements);
+console.log(accountMovements);
+
+console.log(
+  accounts.flatMap((acc) => acc.movements).reduce((acc, mov) => acc + mov)
+);
+
+/* console.log(arr.flat());
+console.log(arr.flat(2));
+console.log(arr.flat(3)); */
