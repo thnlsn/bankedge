@@ -102,7 +102,7 @@ const displayMovements = function (movements, sort = false) {
       i + 1
     } ${type}</div>
         <div class="movements__date">3 days ago</div>
-        <div class="movements__value">${movement}€</div>
+        <div class="movements__value">${movement.toFixed(2)}€</div>
       </div>
     `;
     // Insert the template string as HTML inside and at the beginning of the container
@@ -118,7 +118,7 @@ const calcDisplayBalance = (account) => {
     (acc, movement) => acc + movement,
     0
   );
-  labelBalance.textContent = `${account.balance}€`;
+  labelBalance.textContent = `${account.balance.toFixed(2)}€`;
 };
 
 // CALCULATE THE SUMMARY OF TOTAL DEPOSITS, WITHDRAWALS, & INTEREST
@@ -138,9 +138,9 @@ const calcDisplaySummary = (movements, rate = 1) => {
     .filter((int, _, arr) => int >= 1)
     .reduce((acc, int) => acc + int, 0);
 
-  labelSumIn.textContent = `${incomes}€`;
-  labelSumOut.textContent = `${Math.abs(out)}€`;
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 
 // CREATE USERNAMES FOR ALL ACCOUNTS
@@ -238,7 +238,7 @@ btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
   // Amount to deposit as loan
-  const amount = +inputLoanAmount.value;
+  const amount = Math.floor(inputLoanAmount.value);
 
   // Check if request is above 0 and an existing deposit greater than 10% of request exists, to ensure the user is trustworthy
   if (
@@ -401,7 +401,9 @@ console.log(Number.isNaN(+'20x')); // true */
 // console.log(Math.min(0.45, 1, 544, 23, 0.9));
 // console.log(Math.trunc(Math.random() * 6 + 1));
 
-const randomInt = (min, max) =>
+/* const randomInt = (min, max) =>
   Math.trunc(Math.random() * (max - min + 1) + min);
 
-console.log(randomInt(15, 20));
+console.log(randomInt(15, 20)); */
+
+console.log(+(5.45).toFixed(0));
