@@ -406,4 +406,5 @@ console.log(Number.isNaN(+'20x')); // true */
 
 console.log(randomInt(15, 20)); */
 
-console.log(+(5.45).toFixed(0));
+/* const isEven = (num) => !(num % 2);
+console.log(isEven(2)); */
