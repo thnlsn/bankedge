@@ -408,3 +408,11 @@ console.log(randomInt(15, 20)); */
 
 /* const isEven = (num) => !(num % 2);
 console.log(isEven(2)); */
+
+/* labelBalance.addEventListener('click', function () {
+  document.querySelectorAll('.movements__row').forEach(function (row, i) {
+    if (!(i % 3)) row.style.backgroundColor = 'orangered';
+  });
+}); */
+
+console.log(20n > 50);
