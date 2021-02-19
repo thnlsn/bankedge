@@ -175,6 +175,21 @@ let currentAccount;
 inputLoginUsername.value = 'tn';
 inputLoginPin.value = 1111; */
 
+// Fake logged in
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 1;
+
+const now = new Date(); // --- day/month/year
+const [day, month, year, hours, minutes] = [
+  now.getDate(),
+  now.getMonth() + 1,
+  now.getFullYear(),
+  now.getHours(),
+  now.getMinutes(),
+];
+labelDate.textContent = `${day}/${month}/${year}`;
+
 // LOGIN EVENT //
 btnLogin.addEventListener('click', function (e) {
   // containerApp.addEventListener('click', function (e) {
@@ -417,8 +432,8 @@ console.log(isEven(2)); */
 
 /* console.log(20n > 50); */
 
-const now = new Date();
-console.log(now);
+/* const now = new Date();
+console.log(now); */
 
 console.log(new Date('December 24, 2015'));
 console.log(new Date(account1.movementsDates[0]));
