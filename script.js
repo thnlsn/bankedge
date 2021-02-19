@@ -182,13 +182,13 @@ containerApp.style.opacity = 1;
 
 const now = new Date(); // --- day/month/year
 const [day, month, year, hours, minutes] = [
-  now.getDate(),
-  now.getMonth() + 1,
+  `${now.getDate()}`.padStart(2, 0),
+  `${now.getMonth() + 1}`.padStart(2, 0),
   now.getFullYear(),
-  now.getHours(),
-  now.getMinutes(),
+  `${now.getHours()}`.padStart(2, 0),
+  `${now.getMinutes()}`.padStart(2, 0),
 ];
-labelDate.textContent = `${day}/${month}/${year}`;
+labelDate.textContent = `${day}/${month}/${year}, ${hours}:${minutes}`;
 
 // LOGIN EVENT //
 btnLogin.addEventListener('click', function (e) {
