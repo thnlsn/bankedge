@@ -21,8 +21,8 @@ const account1 = {
     '2021-02-17T23:36:17.929Z',
     '2021-02-20T10:51:36.790Z',
   ],
-  currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+  currency: 'UD',
+  locale: 'en-US', // de-DE
 };
 
 const account2 = {
@@ -41,8 +41,8 @@ const account2 = {
     '2020-06-25T18:49:59.371Z',
     '2020-07-26T12:01:20.894Z',
   ],
-  currency: 'USD',
-  locale: 'en-US',
+  currency: 'EUR',
+  locale: 'pt-PT',
 };
 
 const accounts = [account1, account2];
@@ -86,7 +86,7 @@ inputLoginPin.value = 1111; */
 // DISPLAY FUNCTIONS
 
 // CALCULATE DATE //
-const formatMovementDate = (date) => {
+const formatMovementDate = (date, locale) => {
   const calcDaysPassed = (date1, date2) => {
     return Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
   };
@@ -96,16 +96,12 @@ const formatMovementDate = (date) => {
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
-  if (daysPassed > 7)
-    return `${`${date.getMonth() + 1}`.padStart(
-      2,
-      0
-    )}/${`${date.getDate()}`.padStart(2, 0)}/${date.getFullYear()}`;
+  if (daysPassed > 7) return new Intl.DateTimeFormat(locale).format(date);
 };
 
 // DISPLAY ALL MOVEMENTS //
 const displayMovements = function (
-  { movements, movementsDates: dates },
+  { movements, movementsDates: dates, locale },
   sort = false
 ) {
   // Clear the movements container first
@@ -120,7 +116,9 @@ const displayMovements = function (
   movs.forEach((movement, i) => {
     // Date string
     const date = new Date(dates[i]);
-    const displayDate = formatMovementDate(date);
+    const displayDate = formatMovementDate(date, locale);
+
+    const value = new Intl.NumberFormat(locale).format(movement.toFixed(2));
 
     // If value is positive, type is withdrawal, otherwise it is a deposit
     const type = movement < 0 ? 'withdrawal' : 'deposit'; // Don't allow 0
@@ -132,7 +130,7 @@ const displayMovements = function (
       i + 1
     } ${type}</div>
         <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${movement.toFixed(2)}€</div>
+        <div class="movements__value">${value}</div>
       </div>
     `;
     // Insert the template string as HTML inside and at the beginning of the container
@@ -148,7 +146,10 @@ const calcDisplayBalance = (account) => {
     (acc, movement) => acc + movement,
     0
   );
-  labelBalance.textContent = `${account.balance.toFixed(2)}€`;
+  // Formatting balance based on user locale
+  labelBalance.textContent = new Intl.NumberFormat(account.locale).format(
+    account.balance.toFixed(2)
+  );
 };
 
 // CALCULATE THE SUMMARY OF TOTAL DEPOSITS, WITHDRAWALS, & INTEREST
@@ -201,7 +202,7 @@ currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 1;
 
-// DATES
+/* // DATES
 const now = new Date(); // --- day/month/year
 
 // Options
@@ -216,10 +217,9 @@ const options = {
 
 // Locale
 const locale = navigator.language;
-console.log(locale);
 
 // Internationalization
-labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(now);
+labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(now); */
 
 /* // Defining all the date variables for the heading
 const [day, month, year, hours, minutes] = [
@@ -255,6 +255,19 @@ btnLogin.addEventListener('click', function (e) {
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = ''; // Assignment operator goes from right to left, so it will set all fields to ''
     inputLoginPin.blur();
+
+    const now = new Date();
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    };
+    const locale = currentAccount.locale;
+    labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(
+      now
+    );
   }
 });
 
