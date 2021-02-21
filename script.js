@@ -86,20 +86,27 @@ inputLoginPin.value = 1111; */
 // DISPLAY FUNCTIONS
 
 // DISPLAY ALL MOVEMENTS //
-const displayMovements = function (account, sort = false) {
+const displayMovements = function (
+  { movements, movementsDates: dates },
+  sort = false
+) {
   // Clear the movements container first
   containerMovements.textContent = '';
-
-  console.log(currentAccount.movements);
-  console.log(account.movements);
 
   // Sort if sort parameter is true, otherwise display as normal
   const movs = sort
     ? currentAccount.movements.slice().sort((a, b) => a - b)
-    : account.movements;
+    : movements;
 
   // Construct an html structure to push into the container for each movement
   movs.forEach((movement, i) => {
+    // Date string
+    let date = new Date(dates[i]);
+    date = `${`${date.getMonth() + 1}`.padStart(
+      2,
+      0
+    )}/${`${date.getDate()}`.padStart(2, 0)}/${date.getFullYear()}`;
+
     // If value is positive, type is withdrawal, otherwise it is a deposit
     const type = movement < 0 ? 'withdrawal' : 'deposit'; // Don't allow 0
 
@@ -109,7 +116,7 @@ const displayMovements = function (account, sort = false) {
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__date">3 days ago</div>
+        <div class="movements__date">${date}</div>
         <div class="movements__value">${movement.toFixed(2)}€</div>
       </div>
     `;
@@ -180,6 +187,7 @@ updateUI(currentAccount);
 containerApp.style.opacity = 1;
 
 const now = new Date(); // --- day/month/year
+// Defining all the date variables for the heading
 const [day, month, year, hours, minutes] = [
   `${now.getDate()}`.padStart(2, 0),
   `${now.getMonth() + 1}`.padStart(2, 0),
@@ -187,6 +195,7 @@ const [day, month, year, hours, minutes] = [
   `${now.getHours()}`.padStart(2, 0),
   `${now.getMinutes()}`.padStart(2, 0),
 ];
+// Set the text under the current balance heading to a string of the date at login
 labelDate.textContent = `${day}/${month}/${year}, ${hours}:${minutes}`;
 
 // LOGIN EVENT //
