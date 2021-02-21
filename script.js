@@ -246,12 +246,12 @@ btnTransfer.addEventListener('click', function (e) {
     recieverAccount?.username !== currentAccount.username
   ) {
     // Add inputted amount to recieverAccount
-    accounts
-      .find((account) => account.username === recieverAccount.username)
-      .movements.push(amount);
+    recieverAccount.movements.push(amount);
+    recieverAccount.movementsDates.push(new Date().toISOString()); // Date too
 
     // Remove inputted amount to logged in account
     currentAccount.movements.push(-amount);
+    currentAccount.movementsDates.push(new Date().toISOString()); // Date too
   }
   updateUI(currentAccount);
 });
@@ -271,6 +271,8 @@ btnLoan.addEventListener('click', function (e) {
       .some((deposit) => deposit >= amount / 10)
   )
     currentAccount.movements.push(amount);
+
+  currentAccount.movementsDates.push(new Date().toISOString());
 
   // Update display
   updateUI(currentAccount);
