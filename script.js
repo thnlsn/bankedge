@@ -75,20 +75,28 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // STATE
+// GLOBAL DATA
+let currentAccount;
+/* let currentAccount = account1;
+inputLoginUsername.value = 'tn';
+inputLoginPin.value = 1111; */
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
 
 // DISPLAY ALL MOVEMENTS //
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (account, sort = false) {
   // Clear the movements container first
   containerMovements.textContent = '';
+
+  console.log(currentAccount.movements);
+  console.log(account.movements);
 
   // Sort if sort parameter is true, otherwise display as normal
   const movs = sort
     ? currentAccount.movements.slice().sort((a, b) => a - b)
-    : movements;
+    : account.movements;
 
   // Construct an html structure to push into the container for each movement
   movs.forEach((movement, i) => {
@@ -157,7 +165,7 @@ createUsernames(accounts);
 
 // RERENDER/UPDATE THE DISPLAY //
 const updateUI = (account) => {
-  displayMovements(account.movements);
+  displayMovements(account);
   calcDisplaySummary(account.movements, account.interestRate);
   calcDisplayBalance(account);
 };
@@ -168,12 +176,6 @@ const deleteAccount = (account) => {};
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // EVENT HANDLERS
-
-// GLOBAL DATA
-let currentAccount;
-/* let currentAccount = account1;
-inputLoginUsername.value = 'tn';
-inputLoginPin.value = 1111; */
 
 // Fake logged in
 currentAccount = account1;
@@ -298,7 +300,7 @@ btnSort.addEventListener('click', function (e) {
   e.preventDefault();
   sorted = !sorted; // Flip the boolean
   // Display movements (update only this part of the UI)
-  displayMovements(currentAccount.movements, sorted);
+  displayMovements(currentAccount, sorted);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
