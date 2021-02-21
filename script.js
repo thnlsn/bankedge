@@ -18,8 +18,8 @@ const account1 = {
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
     '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2021-02-17T23:36:17.929Z',
+    '2021-02-20T10:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -85,6 +85,25 @@ inputLoginPin.value = 1111; */
 ///////////////////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
 
+// CALCULATE DATE //
+const formatMovementDate = (date) => {
+  const calcDaysPassed = (date1, date2) => {
+    return Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+  };
+
+  const daysPassed = calcDaysPassed(new Date(), date);
+  console.log(daysPassed);
+
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+  if (daysPassed > 7)
+    return `${`${date.getMonth() + 1}`.padStart(
+      2,
+      0
+    )}/${`${date.getDate()}`.padStart(2, 0)}/${date.getFullYear()}`;
+};
+
 // DISPLAY ALL MOVEMENTS //
 const displayMovements = function (
   { movements, movementsDates: dates },
@@ -101,11 +120,8 @@ const displayMovements = function (
   // Construct an html structure to push into the container for each movement
   movs.forEach((movement, i) => {
     // Date string
-    let date = new Date(dates[i]);
-    date = `${`${date.getMonth() + 1}`.padStart(
-      2,
-      0
-    )}/${`${date.getDate()}`.padStart(2, 0)}/${date.getFullYear()}`;
+    const date = new Date(dates[i]);
+    const displayDate = formatMovementDate(date);
 
     // If value is positive, type is withdrawal, otherwise it is a deposit
     const type = movement < 0 ? 'withdrawal' : 'deposit'; // Don't allow 0
@@ -116,7 +132,7 @@ const displayMovements = function (
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__date">${date}</div>
+        <div class="movements__date">${displayDate}</div>
         <div class="movements__value">${movement.toFixed(2)}€</div>
       </div>
     `;
@@ -185,18 +201,6 @@ const updateUI = (account) => {
 currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 1;
-
-const now = new Date(); // --- day/month/year
-// Defining all the date variables for the heading
-const [day, month, year, hours, minutes] = [
-  `${now.getDate()}`.padStart(2, 0),
-  `${now.getMonth() + 1}`.padStart(2, 0),
-  now.getFullYear(),
-  `${now.getHours()}`.padStart(2, 0),
-  `${now.getMinutes()}`.padStart(2, 0),
-];
-// Set the text under the current balance heading to a string of the date at login
-labelDate.textContent = `${day}/${month}/${year}, ${hours}:${minutes}`;
 
 // LOGIN EVENT //
 btnLogin.addEventListener('click', function (e) {
@@ -311,6 +315,18 @@ btnSort.addEventListener('click', function (e) {
   displayMovements(currentAccount, sorted);
 });
 
+const now = new Date(); // --- day/month/year
+// Defining all the date variables for the heading
+const [day, month, year, hours, minutes] = [
+  `${now.getDate()}`.padStart(2, 0),
+  `${now.getMonth() + 1}`.padStart(2, 0),
+  now.getFullYear(),
+  `${now.getHours()}`.padStart(2, 0),
+  `${now.getMinutes()}`.padStart(2, 0),
+];
+// Set the text under the current balance heading to a string of the date at login
+labelDate.textContent = `${day}/${month}/${year}, ${hours}:${minutes}`;
+
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // UNUSED
@@ -391,14 +407,15 @@ console.log(owners.sort()); */
 /* testArr.sort((a, z) => z - a);
 console.log(testArr); */
 
-labelBalance.addEventListener('click', function (e) {
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/* labelBalance.addEventListener('click', function (e) {
   e.preventDefault();
   const movementsUI = Array.from(
     document.querySelectorAll('.movements__value'),
     (el) => el.textContent.replace('€', '')
   );
   console.log(movementsUI);
-});
+}); */
 
 /* const obj = {
   length: 4,
