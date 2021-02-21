@@ -21,7 +21,7 @@ const account1 = {
     '2021-02-17T23:36:17.929Z',
     '2021-02-20T10:51:36.790Z',
   ],
-  currency: 'UD',
+  currency: 'USD',
   locale: 'en-US', // de-DE
 };
 
@@ -85,6 +85,9 @@ inputLoginPin.value = 1111; */
 ///////////////////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
 
+const internationalizeCurrency = (value, locale, options) =>
+  new Intl.NumberFormat(locale, options).format(value.toFixed(2));
+
 // CALCULATE DATE //
 const formatMovementDate = (date, locale) => {
   const calcDaysPassed = (date1, date2) => {
@@ -101,7 +104,7 @@ const formatMovementDate = (date, locale) => {
 
 // DISPLAY ALL MOVEMENTS //
 const displayMovements = function (
-  { movements, movementsDates: dates, locale },
+  { movements, movementsDates: dates, locale, currency },
   sort = false
 ) {
   // Clear the movements container first
@@ -118,7 +121,12 @@ const displayMovements = function (
     const date = new Date(dates[i]);
     const displayDate = formatMovementDate(date, locale);
 
-    const value = new Intl.NumberFormat(locale).format(movement.toFixed(2));
+    const options = {
+      style: 'currency',
+      currency: currency,
+    };
+    // Value of amount moved, internationalized
+    const value = internationalizeCurrency(movement, locale, options);
 
     // If value is positive, type is withdrawal, otherwise it is a deposit
     const type = movement < 0 ? 'withdrawal' : 'deposit'; // Don't allow 0
@@ -146,10 +154,16 @@ const calcDisplayBalance = (account) => {
     (acc, movement) => acc + movement,
     0
   );
+  // Balance number options
+  const options = {
+    style: 'currency',
+    currency: account.currency,
+  };
   // Formatting balance based on user locale
-  labelBalance.textContent = new Intl.NumberFormat(account.locale).format(
-    account.balance.toFixed(2)
-  );
+  labelBalance.textContent = new Intl.NumberFormat(
+    account.locale,
+    options
+  ).format(account.balance.toFixed(2));
 };
 
 // CALCULATE THE SUMMARY OF TOTAL DEPOSITS, WITHDRAWALS, & INTEREST
