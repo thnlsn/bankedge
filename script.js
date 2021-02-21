@@ -92,7 +92,6 @@ const formatMovementDate = (date) => {
   };
 
   const daysPassed = calcDaysPassed(new Date(), date);
-  console.log(daysPassed);
 
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
@@ -201,6 +200,37 @@ const updateUI = (account) => {
 currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 1;
+
+// DATES
+const now = new Date(); // --- day/month/year
+
+// Options
+const options = {
+  hour: 'numeric',
+  minute: 'numeric',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  weekday: 'long',
+};
+
+// Locale
+const locale = navigator.language;
+console.log(locale);
+
+// Internationalization
+labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(now);
+
+/* // Defining all the date variables for the heading
+const [day, month, year, hours, minutes] = [
+  `${now.getDate()}`.padStart(2, 0),
+  `${now.getMonth() + 1}`.padStart(2, 0),
+  now.getFullYear(),
+  `${now.getHours()}`.padStart(2, 0),
+  `${now.getMinutes()}`.padStart(2, 0),
+];
+// Set the text under the current balance heading to a string of the date at login
+labelDate.textContent = `${month}/${day}/${year}, ${hours}:${minutes}`; */
 
 // LOGIN EVENT //
 btnLogin.addEventListener('click', function (e) {
@@ -314,18 +344,6 @@ btnSort.addEventListener('click', function (e) {
   // Display movements (update only this part of the UI)
   displayMovements(currentAccount, sorted);
 });
-
-const now = new Date(); // --- day/month/year
-// Defining all the date variables for the heading
-const [day, month, year, hours, minutes] = [
-  `${now.getDate()}`.padStart(2, 0),
-  `${now.getMonth() + 1}`.padStart(2, 0),
-  now.getFullYear(),
-  `${now.getHours()}`.padStart(2, 0),
-  `${now.getMinutes()}`.padStart(2, 0),
-];
-// Set the text under the current balance heading to a string of the date at login
-labelDate.textContent = `${day}/${month}/${year}, ${hours}:${minutes}`;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
