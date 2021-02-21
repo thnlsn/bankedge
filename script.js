@@ -121,6 +121,7 @@ const displayMovements = function (
     const date = new Date(dates[i]);
     const displayDate = formatMovementDate(date, locale);
 
+    // Intl options for the value of movement to be displayed on each movement
     const options = {
       style: 'currency',
       currency: currency,
@@ -154,16 +155,20 @@ const calcDisplayBalance = (account) => {
     (acc, movement) => acc + movement,
     0
   );
-  // Balance number options
+
+  // Intl options for the for account balance to be displayed
   const options = {
     style: 'currency',
     currency: account.currency,
   };
-  // Formatting balance based on user locale
-  labelBalance.textContent = new Intl.NumberFormat(
+  // Value of account balance, internationalized
+  internationalizeCurrency(account.balance, account.locale, options);
+
+  labelBalance.textContent = internationalizeCurrency(
+    account.balance,
     account.locale,
     options
-  ).format(account.balance.toFixed(2));
+  );
 };
 
 // CALCULATE THE SUMMARY OF TOTAL DEPOSITS, WITHDRAWALS, & INTEREST
