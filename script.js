@@ -76,7 +76,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 // STATE
 // GLOBAL DATA
-let currentAccount;
+let currentAccount, timer;
 /* let currentAccount = account1;
 inputLoginUsername.value = 'tn';
 inputLoginPin.value = 1111; */
@@ -190,7 +190,7 @@ const calcDisplaySummary = (movements, rate = 1) => {
   const interest = movements
     .filter((deposit) => deposit > 0)
     .map((deposit) => (deposit * rate) / 100)
-    .filter((int, _, arr) => int >= 1)
+    .filter((int) => int >= 1)
     .reduce((acc, int) => acc + int, 0);
 
   labelSumIn.textContent = internationalizeCurrency(
@@ -232,7 +232,7 @@ const updateUI = (account) => {
 // TIMER FUNCTION //
 const startLogOutTimer = function () {
   // Set timer to 10 minutes
-  let time = 3000;
+  let time = 600000;
 
   // Define the second interval function
   const tick = function () {
@@ -262,6 +262,7 @@ const startLogOutTimer = function () {
   // Call the timer every second
   tick(); // Call it immidiately so that there wont be a 1 second delay
   const timer = setInterval(tick, 1000);
+  return timer;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -304,7 +305,8 @@ btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
 
   // Logout Timer
-  startLogOutTimer();
+  if (timer) clearInterval(timer); // If there is currently a timer already set from a previous login, first clear that one before starting a new one
+  timer = startLogOutTimer(); // Set the global timer variable to the function that sets the interval for logout timer
 
   // Find the account with the same username as inputted
   currentAccount = accounts.find(
@@ -373,6 +375,9 @@ btnTransfer.addEventListener('click', function (e) {
       updateUI(currentAccount);
     }, 2000);
   }
+  // Reset logout timer
+  clearInterval(timer);
+  startLogOutTimer();
 });
 
 // REQUEST LOAN //
@@ -398,6 +403,9 @@ btnLoan.addEventListener('click', function (e) {
       updateUI(currentAccount);
     }, 2000);
   }
+  // Reset logout timer
+  clearInterval(timer);
+  timer = startLogOutTimer();
 });
 
 // DELETE ACCOUNT //
