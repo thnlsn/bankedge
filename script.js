@@ -229,14 +229,44 @@ const updateUI = (account) => {
   calcDisplayBalance(account);
 };
 
+// TIMER FUNCTION //
+const startLogOutTimer = function () {
+  // Set timer to 10 minutes
+  let time = 3000;
+
+  // Define the second interval function
+  const tick = function () {
+    // Mins & secs
+    const min = String(Math.trunc(time / 1000 / 60)).padStart(2, 0);
+    const sec = String(Math.trunc((time / 1000) % 60)).padStart(2, 0);
+
+    // In each call, print the remainder to UI
+    labelTimer.textContent = `${min}:${sec}`;
+
+    // Decrease timer
+    time -= 1000;
+
+    if (time < 0) {
+      // End the timer
+      clearInterval(timer);
+
+      // Make the UI invisible
+      containerApp.style.opacity = 0;
+      // Display UI message notifying a successful login
+      //labelWelcome
+      labelWelcome.textContent = 'Log in to get started';
+      updateUI(currentAccount);
+    }
+  };
+
+  // Call the timer every second
+  tick(); // Call it immidiately so that there wont be a 1 second delay
+  const timer = setInterval(tick, 1000);
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 // EVENT HANDLERS
-
-// Fake logged in
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 1;
 
 /* // DATES
 const now = new Date(); // --- day/month/year
@@ -272,6 +302,10 @@ labelDate.textContent = `${month}/${day}/${year}, ${hours}:${minutes}`; */
 btnLogin.addEventListener('click', function (e) {
   // containerApp.addEventListener('click', function (e) {
   e.preventDefault();
+
+  // Logout Timer
+  startLogOutTimer();
+
   // Find the account with the same username as inputted
   currentAccount = accounts.find(
     (account) => account.username === inputLoginUsername.value
