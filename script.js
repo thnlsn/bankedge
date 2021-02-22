@@ -167,6 +167,15 @@ const calcDisplayBalance = (account) => {
   );
 };
 
+/* const ingredients = ['olives', 'peppers', 'turnips', 'spinach', 'pepperoni'];
+const timer = setTimeout(
+  (...ingredients) =>
+    console.log(`Here is your pizza with ${ingredients.join(', ')}!`),
+  2000,
+  ...ingredients
+);
+if (ingredients.includes('spinach')) clearTimeout(timer); */
+
 // CALCULATE THE SUMMARY OF TOTAL DEPOSITS, WITHDRAWALS, & INTEREST
 const calcDisplaySummary = (movements, rate = 1) => {
   // Filter and reduce all deposits into a total
@@ -319,15 +328,17 @@ btnTransfer.addEventListener('click', function (e) {
     amount <= currentAccount.balance &&
     recieverAccount?.username !== currentAccount.username
   ) {
-    // Add inputted amount to recieverAccount
-    recieverAccount.movements.push(amount);
-    recieverAccount.movementsDates.push(new Date().toISOString()); // Date too
+    setTimeout(() => {
+      // Add inputted amount to recieverAccount
+      recieverAccount.movements.push(amount);
+      recieverAccount.movementsDates.push(new Date().toISOString()); // Date too
 
-    // Remove inputted amount to logged in account
-    currentAccount.movements.push(-amount);
-    currentAccount.movementsDates.push(new Date().toISOString()); // Date too
+      // Remove inputted amount to logged in account
+      currentAccount.movements.push(-amount);
+      currentAccount.movementsDates.push(new Date().toISOString()); // Date too
+      updateUI(currentAccount);
+    }, 2000);
   }
-  updateUI(currentAccount);
 });
 
 // REQUEST LOAN //
@@ -343,13 +354,16 @@ btnLoan.addEventListener('click', function (e) {
     currentAccount.movements
       .filter((movement) => movement > 0)
       .some((deposit) => deposit >= amount / 10)
-  )
-    currentAccount.movements.push(amount);
+  ) {
+    setTimeout(() => {
+      currentAccount.movements.push(amount);
 
-  currentAccount.movementsDates.push(new Date().toISOString());
+      currentAccount.movementsDates.push(new Date().toISOString());
 
-  // Update display
-  updateUI(currentAccount);
+      // Update display
+      updateUI(currentAccount);
+    }, 2000);
+  }
 });
 
 // DELETE ACCOUNT //
