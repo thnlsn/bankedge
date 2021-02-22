@@ -190,7 +190,7 @@ const calcDisplaySummary = (movements, rate = 1) => {
     currentAccount.currency
   );
   labelSumOut.textContent = internationalizeCurrency(
-    out,
+    Math.abs(out),
     currentAccount.locale,
     currentAccount.currency
   );
