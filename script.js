@@ -85,8 +85,12 @@ inputLoginPin.value = 1111; */
 ///////////////////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
 
-const internationalizeCurrency = (value, locale, options) =>
-  new Intl.NumberFormat(locale, options).format(value.toFixed(2));
+const internationalizeCurrency = function (value, locale, cur) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: cur,
+  }).format(value);
+};
 
 // CALCULATE DATE //
 const formatMovementDate = (date, locale) => {
@@ -121,13 +125,12 @@ const displayMovements = function (
     const date = new Date(dates[i]);
     const displayDate = formatMovementDate(date, locale);
 
-    // Intl options for the value of movement to be displayed on each movement
-    const options = {
-      style: 'currency',
-      currency: currency,
-    };
     // Value of amount moved, internationalized
-    const value = internationalizeCurrency(movement, locale, options);
+    const internationalizedMovement = internationalizeCurrency(
+      movement,
+      locale,
+      currency
+    );
 
     // If value is positive, type is withdrawal, otherwise it is a deposit
     const type = movement < 0 ? 'withdrawal' : 'deposit'; // Don't allow 0
@@ -139,7 +142,7 @@ const displayMovements = function (
       i + 1
     } ${type}</div>
         <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${value}</div>
+        <div class="movements__value">${internationalizedMovement}</div>
       </div>
     `;
     // Insert the template string as HTML inside and at the beginning of the container
@@ -156,18 +159,11 @@ const calcDisplayBalance = (account) => {
     0
   );
 
-  // Intl options for the for account balance to be displayed
-  const options = {
-    style: 'currency',
-    currency: account.currency,
-  };
-  // Value of account balance, internationalized
-  internationalizeCurrency(account.balance, account.locale, options);
-
+  // Set balance to internationalized format using options
   labelBalance.textContent = internationalizeCurrency(
     account.balance,
     account.locale,
-    options
+    account.currency
   );
 };
 
@@ -188,9 +184,21 @@ const calcDisplaySummary = (movements, rate = 1) => {
     .filter((int, _, arr) => int >= 1)
     .reduce((acc, int) => acc + int, 0);
 
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
-  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumIn.textContent = internationalizeCurrency(
+    incomes,
+    currentAccount.locale,
+    currentAccount.currency
+  );
+  labelSumOut.textContent = internationalizeCurrency(
+    out,
+    currentAccount.locale,
+    currentAccount.currency
+  );
+  labelSumInterest.textContent = internationalizeCurrency(
+    interest,
+    currentAccount.locale,
+    currentAccount.currency
+  );
 };
 
 // CREATE USERNAMES FOR ALL ACCOUNTS
